@@ -1,0 +1,22 @@
+name: Publish Universe
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  publish:
+    if: contains(github.event.issue.labels.*.name, 'universe')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate and publish universe
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/publish.py
